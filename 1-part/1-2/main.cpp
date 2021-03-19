@@ -26,7 +26,7 @@ typedef struct {
 } Point;
 
 
-double get_square(const std::vector<Point*>& points) {
+double getSquare(const std::vector<Point>& points) {
     double square = 0;
     auto size = points.size();
 
@@ -37,31 +37,30 @@ double get_square(const std::vector<Point*>& points) {
         auto curr_point = points[i];
         auto next_point = points[next];
 
-        square += (curr_point->x * next_point->y - next_point->x * curr_point->y);
+        square += (curr_point.x * next_point.y - next_point.x * curr_point.y);
     }
 
     return abs(square) / 2;
 }
 
 int main() {
-
     size_t size = 0 ;
     cin >> size;
 
-    vector<Point*> points(size);
+    vector<Point> points(size);
 
     for(size_t i = 0 ; i < size; ++i) {
         double x = 0 , y = 0 ;
         cin >> x >> y;
 
-        auto p = new(Point);
-        p->x = x;
-        p->y = y;
+        Point p;
+        p.x = x;
+        p.y = y;
 
         points[i] = p;
     }
 
-    cout << get_square(points) << endl;
+    cout << getSquare(points) << endl;
 
     return 0;
 }

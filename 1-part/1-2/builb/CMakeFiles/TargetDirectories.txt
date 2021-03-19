@@ -1,0 +1,3 @@
+/home/paccbet/techno/technopark-algo/1-part/1-2/builb/CMakeFiles/rebuild_cache.dir
+/home/paccbet/techno/technopark-algo/1-part/1-2/builb/CMakeFiles/edit_cache.dir
+/home/paccbet/techno/technopark-algo/1-part/1-2/builb/CMakeFiles/main.dir
