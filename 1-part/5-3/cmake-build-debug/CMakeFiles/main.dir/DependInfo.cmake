@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/chernyh.nikita2/techno/algo/technopark-algo/1-part/5-3/main.cpp" "/Users/chernyh.nikita2/techno/algo/technopark-algo/1-part/5-3/cmake-build-debug/CMakeFiles/main.dir/main.cpp.o"
+  "/home/paccbet/techno/technopark-algo/1-part/5-3/main.cpp" "/home/paccbet/techno/technopark-algo/1-part/5-3/cmake-build-debug/CMakeFiles/main.dir/main.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "AppleClang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

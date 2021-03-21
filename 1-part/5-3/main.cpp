@@ -1,15 +1,23 @@
 //
 // Created by Черных Никита Алекандрович on 3/17/21.
 //
-// Дан массив целых чисел A[0..n), n не превосходит 100 000.
-// Так же задан размер некотрого окна (последовательно расположенных элементов массива) в этом массиве k, k<=n.
-// Требуется для каждого положения окна (от 0 и до n-k) вывести значение максимума в окне. Скорость работы O(n log n), память O(n).
+// На числовой прямой окрасили N отрезков.
+// Известны координаты левого и правого концов каждого отрезка (Li и Ri).
+// Найти длину окрашенной части числовой прямой.
 
 #include <iostream>
-#include <vector>
-#include <map>
 
 using namespace std;
+
+class Segment {
+public:
+    unsigned long int start;
+    unsigned long int end;
+
+    friend bool operator<(const Segment &l, const Segment &r) {
+        return l.start < r.start;
+    }
+};
 
 template<class T>
 struct LessComparator {
@@ -19,20 +27,37 @@ struct LessComparator {
 };
 
 template<class T, class Comparator = LessComparator<T> >
-class MergeSort {
+class Solver {
 public:
-    MergeSort() : size(0) {
+    Solver() : size(0) {
         array = new T[size];
     };
 
-    MergeSort(T *array, size_t size) : size(size), array(array) {};
+    Solver(T *array, size_t size) : size(size), array(array) {};
 
-    ~MergeSort() {
+    ~Solver() {
         delete[] array;
     }
 
-    T *Sort() {
-        return sort(array, 0, size - 1);
+    size_t Solve() {
+        auto sorted = sort(array, 0, size - 1);
+        size_t length = 0, current_start = 0, current_end = 0;
+
+        for (size_t i = 0; i < size; ++i) {
+            if (sorted[i].end <= current_end) {
+                continue;
+            }
+
+            if (current_end == sorted[i].end && current_start == sorted[i].start) {
+                continue;
+            }
+
+            current_start = sorted[i].start <= current_end ? current_end : sorted[i].start;
+            current_end = sorted[i].end;
+            length += current_end - current_start;
+        }
+
+        return length;
     }
 
 private:
@@ -40,13 +65,11 @@ private:
         if (left >= right)
             return data;
 
-        cout << endl;
+        auto med = (right + left) / 2;
 
-        auto med = left + (right - left) / 2;
-
-        auto leftPart = sort(data, left, med);
-        auto rightPart = sort(data, med + 1, right);
-        auto merged = merge(leftPart + left, rightPart + med, med - left + 1, right - med);
+        auto leftPart = sort(data + left, 0, med);
+        auto rightPart = sort(data + med + 1, 0, right - med - 1);
+        auto merged = merge(leftPart, rightPart, med - left + 1, right - med);
 
         return merged;
     };
@@ -80,30 +103,18 @@ private:
     Comparator cmp;
 };
 
-// 0 2 4
-// 1 3
-
-// 0 2 4 1 3
-// 0 1 4 2 3
-// 0 1 2 4 3
-
 int main() {
     size_t size = 0;
     cin >> size;
-    auto array = new int[size];
+    auto array = new Segment[size];
     for (size_t i = 0; i < size; ++i) {
-        cin >> array[i];
+        cin >> array[i].start >> array[i].end;
     }
 
-    auto solver = new MergeSort<int>(array, size);
+    auto solver = new Solver<Segment>(array, size);
 
-    auto resp = solver->Sort();
+    cout << solver->Solve() << endl;
 
-    for (size_t i = 0; i < size; ++i) {
-        cout << resp[i] << " ";
-    }
-
-    delete resp;
     delete solver;
     return 0;
 }
