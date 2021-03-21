@@ -155,6 +155,7 @@ struct Maximum {
     T value;
     size_t start;
     size_t end;
+    bool notEmpty;
 };
 
 template<class T>
@@ -168,11 +169,48 @@ public:
 
     void Solve(size_t window) {
         auto cap = heap->GetCapacity();
-        size_t start = 0, end = window;
-        std::map
+        size_t end = window - 1, parts = cap - window + 1;
+        map<int, Maximum<int>> d;
 
+        while (parts >= 0) {
+            auto el = heap->Get();
+
+            size_t element_start = el.position;
+            size_t element_end = el.position + window > cap ? cap : el.position + window ;
+
+            Maximum<int> el_quot = {el.data, element_start, element_end, true};
+
+            size_t added_elements = 0;
+            while (element_start <= element_end) {
+                if (d[element_start].notEmpty) {
+                    element_start = d[element_start].end + 1;
+                    continue;
+                }
+
+
+                d[element_start] = el_quot;
+                added_elements++;
+                element_start++;
+            }
+
+            if (parts < added_elements) {
+                break;
+            }
+
+            if (parts == 0)
+                break;
+
+            parts -= added_elements;
+        }
+
+        while (end < cap) {
+            cout << d[end].value << " ";
+            end++;
+        }
     };
 private:
+
+
     Heap<T> *heap;
 };
 
