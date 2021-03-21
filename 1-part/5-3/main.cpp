@@ -57,13 +57,18 @@ public:
             length += current_end - current_start;
         }
 
+        delete[] sorted;
+
         return length;
     }
 
 private:
     T *sort(T *const data, size_t left, size_t right) {
-        if (left >= right)
-            return data;
+        if (left >= right) {
+            auto one = new T[1];
+            one[0] = data[0];
+            return one;
+        }
 
         auto med = (right + left) / 2;
 
@@ -71,10 +76,13 @@ private:
         auto rightPart = sort(data + med + 1, 0, right - med - 1);
         auto merged = merge(leftPart, rightPart, med - left + 1, right - med);
 
+        delete[] leftPart;
+        delete[] rightPart;
+
         return merged;
     };
 
-    T *merge(T *const first, T *const second, size_t firstSize, size_t secondSize) {
+    T *merge(T *const first, T *const second, size_t const &firstSize, size_t const &secondSize) {
         auto merged = new T[firstSize + secondSize];
         size_t firstIterator = 0, secondIterator = 0, mergedIterator = 0;
 
