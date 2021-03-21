@@ -24,15 +24,15 @@ struct LessComparator {
     }
 };
 
-template<class T, class Comparator = LessComparator<T>>
+template<class T, class Comparator = LessComparator<T> >
 class Heap {
 public:
-    Heap() : size(0), capacity(0), size_multiply(0) {
+    Heap() : size(0), capacity(0), sizeMultiply(0) {
         array = new Element<T>[size];
     };
 
     Heap(Element<T> *array, size_t size, size_t capacity, size_t size_multiply) : size(size), capacity(capacity),
-                                                                                  size_multiply(size_multiply),
+                                                                                  sizeMultiply(size_multiply),
                                                                                   array(array) {
         buildHeap();
     };
@@ -64,7 +64,7 @@ public:
 
 private:
     void resize() {
-        size *= size_multiply;
+        size *= sizeMultiply;
         auto newArray = new Element<T>[size];
         for (size_t i = 0; i < capacity; ++i) {
             newArray[i] = array[i];
@@ -146,14 +146,13 @@ private:
     Element<T> *array;
     size_t size;
     size_t capacity;
-    size_t size_multiply;
+    size_t sizeMultiply;
     Comparator cmp;
 };
 
 template<class T>
 struct Maximum {
     T value;
-    size_t start;
     size_t end;
     bool notEmpty;
 };
@@ -168,49 +167,54 @@ public:
     };
 
     void Solve(size_t window) {
+        if (window == 0) {
+            return;
+        }
+
         auto cap = heap->GetCapacity();
-        size_t end = window - 1, parts = cap - window + 1;
-        map<int, Maximum<int>> d;
+        size_t parts = cap - window + 1;
+        map<int, Maximum<int> > d;
 
         while (parts >= 0) {
             auto el = heap->Get();
 
-            size_t element_start = el.position;
-            size_t element_end = el.position + window > cap ? cap : el.position + window ;
+            size_t elementStart = el.position;
+            size_t elementEnd = el.position + window - 1;
+            if (elementEnd >= cap) {
+                elementEnd = cap - 1;
+            }
 
-            Maximum<int> el_quot = {el.data, element_start, element_end, true};
+            Maximum<int> el_section = {el.data, elementStart, true};
 
-            size_t added_elements = 0;
-            while (element_start <= element_end) {
-                if (d[element_start].notEmpty) {
-                    element_start = d[element_start].end + 1;
+            size_t addedElements = 0;
+            while (elementStart <= elementEnd && parts >= addedElements) {
+                if (d[elementStart].notEmpty) {
+                    elementStart = d[elementStart].end + 1;
                     continue;
                 }
 
-
-                d[element_start] = el_quot;
-                added_elements++;
-                element_start++;
+                d[elementStart] = el_section;
+                addedElements++;
+                elementStart++;
             }
 
-            if (parts < added_elements) {
+            if (parts < addedElements) {
                 break;
             }
 
             if (parts == 0)
                 break;
 
-            parts -= added_elements;
+            parts -= addedElements;
         }
 
-        while (end < cap) {
-            cout << d[end].value << " ";
-            end++;
+        size_t windowIterator = window - 1;
+        while (windowIterator < cap) {
+            cout << d[windowIterator].value << " ";
+            windowIterator++;
         }
     };
 private:
-
-
     Heap<T> *heap;
 };
 
