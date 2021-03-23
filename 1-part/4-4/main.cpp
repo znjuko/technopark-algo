@@ -6,7 +6,6 @@
 // Требуется для каждого положения окна (от 0 и до n-k) вывести значение максимума в окне. Скорость работы O(n log n), память O(n).
 
 #include <iostream>
-#include <vector>
 #include <map>
 
 using namespace std;
@@ -24,7 +23,7 @@ struct LessComparator {
     }
 };
 
-template<class T, class Comparator = LessComparator<T> >
+template<class T, class Comparator = LessComparator<T>>
 class Heap {
 public:
     Heap() : size(0), capacity(0), sizeMultiply(0) {
@@ -172,48 +171,34 @@ public:
         }
 
         auto cap = heap->GetCapacity();
-        size_t parts = cap - window + 1;
-        map<int, Maximum<int> > d;
+        size_t parts = cap - window + 1, totalElements = 0, windowIncludingCurrent = window - 1;
+        auto windowResponse = new Maximum<T>[parts];
+        std::fill_n(windowResponse,parts+1,Maximum<T>{T(),0, false});
 
-        while (parts >= 0) {
+        while (totalElements <= parts) {
             auto el = heap->Get();
 
-            size_t elementStart = el.position;
-            size_t elementEnd = el.position + window - 1;
-            if (elementEnd >= cap) {
-                elementEnd = cap - 1;
-            }
+            size_t elementStart = el.position < windowIncludingCurrent ? 0 : el.position - windowIncludingCurrent;
+            size_t elementEnd = el.position;
+            Maximum<T> el_section = {el.data, elementEnd, true};
 
-            Maximum<int> el_section = {el.data, elementStart, true};
-
-            size_t addedElements = 0;
-            while (elementStart <= elementEnd && parts >= addedElements) {
-                if (d[elementStart].notEmpty) {
-                    elementStart = d[elementStart].end + 1;
+            while (elementStart <= elementEnd && totalElements <= parts) {
+                cout << elementStart << endl;
+                if (windowResponse[elementStart].notEmpty) {
+                    cout << "not visited!" << endl;
+                    elementStart = windowResponse[elementStart].end + 1;
                     continue;
                 }
-
-                d[elementStart] = el_section;
-                addedElements++;
+                cout << "visited!" << endl;
+                windowResponse[elementStart] = el_section;
+                totalElements++;
                 elementStart++;
             }
-
-            if (parts < addedElements) {
-                break;
-            }
-
-            if (parts == 0)
-                break;
-
-            parts -= addedElements;
         }
 
-        size_t windowIterator = window - 1;
-        while (windowIterator < cap) {
-            cout << d[windowIterator].value << " ";
-            windowIterator++;
-        }
+        delete[] windowResponse;
     };
+
 private:
     Heap<T> *heap;
 };
