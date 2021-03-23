@@ -6,8 +6,6 @@
 // Требуется для каждого положения окна (от 0 и до n-k) вывести значение максимума в окне. Скорость работы O(n log n), память O(n).
 
 #include <iostream>
-#include <map>
-
 using namespace std;
 
 template<class T>
@@ -173,28 +171,28 @@ public:
         auto cap = heap->GetCapacity();
         size_t parts = cap - window + 1, totalElements = 0, windowIncludingCurrent = window - 1;
         auto windowResponse = new Maximum<T>[parts];
-        std::fill_n(windowResponse,parts+1,Maximum<T>{T(),0, false});
+        std::fill_n(windowResponse, parts, Maximum<T>{T(), 0, false});
 
-        while (totalElements <= parts) {
+        while (totalElements < parts) {
             auto el = heap->Get();
 
             size_t elementStart = el.position < windowIncludingCurrent ? 0 : el.position - windowIncludingCurrent;
             size_t elementEnd = el.position;
             Maximum<T> el_section = {el.data, elementEnd, true};
 
-            while (elementStart <= elementEnd && totalElements <= parts) {
-                cout << elementStart << endl;
+            while (elementStart <= elementEnd && totalElements <= parts && elementStart < parts) {
                 if (windowResponse[elementStart].notEmpty) {
-                    cout << "not visited!" << endl;
                     elementStart = windowResponse[elementStart].end + 1;
                     continue;
                 }
-                cout << "visited!" << endl;
                 windowResponse[elementStart] = el_section;
                 totalElements++;
                 elementStart++;
             }
         }
+
+        for(size_t i = 0 ; i < parts ; ++i)
+            cout << windowResponse[i].value << " ";
 
         delete[] windowResponse;
     };

@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/paccbet/techno/technopark-algo/1-part/3-3/main.cpp" "/home/paccbet/techno/technopark-algo/1-part/3-3/build/CMakeFiles/main.dir/main.cpp.o"
+  "/home/paccbet/techno/technopark-algo/1-part/4-4/main.cpp" "/home/paccbet/techno/technopark-algo/1-part/4-4/build/CMakeFiles/main.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
