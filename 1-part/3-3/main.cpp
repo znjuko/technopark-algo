@@ -19,14 +19,14 @@ struct Element {
 template<typename T>
 class Stack {
 public:
-    Stack() : size(0), capacity(0), capacityMultiply(0) {
-        array = new T[size];
+    Stack() : size(0), capacity(1), capacityMultiply(0) {
+        array = new T[capacity];
     };
 
     Stack(size_t size, size_t capacity, size_t capacityMultiply) : size(size),
                                                                    capacity(capacity),
                                                                    capacityMultiply(capacityMultiply) {
-        array = new T[size];
+        array = new T[capacity];
     };
 
     ~Stack() {
