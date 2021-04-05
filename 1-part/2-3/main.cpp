@@ -45,13 +45,27 @@ Place binarySearch(const vector<int> &array, const int &el, const int &start, co
     return Place{false, middle};
 }
 
+int exponentialSearch(const vector<int> &array, const int &el, const int &start, const int &size) {
+    int expEnd = max(start, 1);
+
+    while (array[expEnd] < el && expEnd < size) {
+        expEnd *= 2;
+    }
+
+    return min(expEnd + 1, size);
+}
+
+
 vector<int> intersection(const vector<int> &from, const vector<int> &what) {
     vector<int> result;
     Place place;
     int start = 0, end = from.size();
 
     for (auto elem : what) {
-        place = binarySearch(from, elem, start, end);
+        place = binarySearch(
+                from, elem, start,
+                exponentialSearch(from, elem, start, end)
+        );
         start = place.place;
 
         if (place.found) {
