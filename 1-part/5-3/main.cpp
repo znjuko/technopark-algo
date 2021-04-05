@@ -27,39 +27,24 @@ struct LessComparator {
 };
 
 template<class T, class Comparator = LessComparator<T> >
-class Solver {
+class Sorter {
 public:
-    Solver() : size(0) {
+    Sorter() : size(0) {
         array = new T[size];
     };
 
-    Solver(T *array, size_t size) : size(size), array(array) {};
+    Sorter(T *array, size_t size) : size(size), array(array) {};
 
-    ~Solver() {
+    ~Sorter() {
         delete[] array;
     }
 
-    size_t Solve() {
-        auto sorted = sort(array, 0, size - 1);
-        size_t length = 0, current_start = 0, current_end = 0;
+    T *Sort() {
+        return sort(array, 0, size - 1);
+    }
 
-        for (size_t i = 0; i < size; ++i) {
-            if (sorted[i].end <= current_end) {
-                continue;
-            }
-
-            if (current_end == sorted[i].end && current_start == sorted[i].start) {
-                continue;
-            }
-
-            current_start = sorted[i].start <= current_end ? current_end : sorted[i].start;
-            current_end = sorted[i].end;
-            length += current_end - current_start;
-        }
-
-        delete[] sorted;
-
-        return length;
+    size_t GetSize() {
+        return size;
     }
 
 private:
@@ -111,6 +96,45 @@ private:
     Comparator cmp;
 };
 
+template<class T, class Comparator = LessComparator<T> >
+class Solver {
+public:
+    Solver() : s() {};
+
+    Solver(Sorter<T, Comparator> *s) : s(s) {};
+
+    ~Solver() {
+        delete s;
+    }
+
+    size_t Solve() {
+        auto sorted = s->Sort();
+        auto size = s->GetSize();
+        size_t length = 0, current_start = 0, current_end = 0;
+
+        for (size_t i = 0; i < size; ++i) {
+            if (sorted[i].end <= current_end) {
+                continue;
+            }
+
+            if (current_end == sorted[i].end && current_start == sorted[i].start) {
+                continue;
+            }
+
+            current_start = sorted[i].start <= current_end ? current_end : sorted[i].start;
+            current_end = sorted[i].end;
+            length += current_end - current_start;
+        }
+
+        delete[] sorted;
+
+        return length;
+    }
+
+private:
+    Sorter<T, Comparator> *s;
+};
+
 int main() {
     size_t size = 0;
     cin >> size;
@@ -119,8 +143,8 @@ int main() {
         cin >> array[i].start >> array[i].end;
     }
 
-    auto solver = new Solver<Segment>(array, size);
-
+    auto sorter = new Sorter<Segment>(array, size);
+    auto solver = new Solver<Segment>(sorter);
     cout << solver->Solve() << endl;
 
     delete solver;

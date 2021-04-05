@@ -24,8 +24,8 @@ struct LessComparator {
 template<class T, class Comparator = LessComparator<T>>
 class Heap {
 public:
-    Heap() : size(0), capacity(0), sizeMultiply(0) {
-        array = new Element<T>[size];
+    Heap() : size(0), capacity(1), sizeMultiply(0) {
+        array = new Element<T>[capacity];
     };
 
     Heap(Element<T> *array, size_t size, size_t capacity, size_t size_multiply) : size(size), capacity(capacity),
