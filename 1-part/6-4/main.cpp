@@ -6,6 +6,10 @@
 // Реализуйте стратегию выбора опорного элемента “случайный элемент”.
 // Функцию Partition реализуйте методом прохода двумя итераторами от конца массива к началу.
 
+
+// j указывает на первый элемент с конца, меньший пивота
+// i указывает на первый элемент от j, больший пивота
+
 #include <iostream>
 #include <random>
 
@@ -18,7 +22,7 @@ struct LessComparator {
     }
 };
 
-template<class T, class Comparator=LessComparator<T>>
+template<class T, class Comparator=LessComparator<T> >
 class StatisticSearcher {
 public:
     StatisticSearcher() = default;
@@ -52,21 +56,28 @@ public:
 
 private:
     int partition(T *arr, int left, int right) {
-        size_t partValue = arr[(left + right) / 2];
+        if(left == right)
+            return left;
+
+        size_t partValue = 2;
+                // generate(left, right);
         swap(arr[partValue], arr[right]);
         int i = right - 1, j = right - 1;
 
-        while (i >= left && j >= left) {
-            while (i >= left && !cmp(arr[i], arr[right]))
-                --i;
-            while (j >= left && cmp(arr[j], arr[right]))
+        while (i > left && j > left) {
+            while (j > left && !cmp(arr[j], arr[right]))
                 --j;
 
-            swap(arr[j--], arr[i--]);
-        }
-        swap(arr[right], arr[i]);
+            i = j;
+            while (i > left && cmp(arr[i], arr[right]))
+                --i;
 
-        return i;
+            swap(arr[i--], arr[j--]);
+        }
+
+        swap(arr[right], arr[j]);
+
+        return j;
     }
 
     int generate(int left, int right) {
@@ -77,7 +88,7 @@ private:
     }
 
     T *array;
-    int size{};
+    int size;
     Comparator cmp;
 };
 
